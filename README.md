@@ -13,7 +13,6 @@ I started and finished this project in November 2024.
 - TypeScript
 - Express
 - Express validator
-- Express rate limit
 - Passport (with passport-jwt strategy)
 - Jsonwebtoken
 - Prisma (PostgreSQL as db)
@@ -22,7 +21,9 @@ I started and finished this project in November 2024.
 
 #### Additional NPM packages:
 
-- Express async handler
+- Express rate limit
+- nodemon
+- helmet
 - CORS
 - dotenv
 
