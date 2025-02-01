@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int            @id @default(autoincrement())
+  firstName          String         @db.VarChar(30)
+  lastName           String?        @db.VarChar(30)
+  email              String         @unique @db.VarChar(100)
+  password           String         @db.VarChar(100)
+  imgUrl             String?        @db.VarChar(500)
+  about              String?        @db.VarChar(120)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  conversations      Conversation[] @relation("UserConversations")
+  adminConversations Conversation[] @relation("AdminConversations")
+  messages           Message[]      @relation("UserMessages")
+  readMessages       Message[]      @relation("MessageReads")
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(30)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  isGroup   Boolean   @default(false)
+  imgUrl    String?   @db.VarChar(500)
+  admins    User[]    @relation("AdminConversations")
+  users     User[]    @relation("UserConversations")
+  messages  Message[] @relation("ConversationMessages")
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deleted        Boolean      @default(false)
+  text           String?      @db.VarChar(10000)
+  imgUrl         String?      @db.VarChar(500)
+  sender         User         @relation("UserMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId       Int
+  conversation   Conversation @relation("ConversationMessages", fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId Int
+  readBy         User[]       @relation("MessageReads")
+}
